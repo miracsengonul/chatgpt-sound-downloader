@@ -69,4 +69,4 @@ If you find this extension helpful, please consider giving it a star on GitHub!
 
 ---
 
-<p align="center">Made with ❤️ by [Your Name/Company]</p>
+<p align="center">Made with ❤️ by Mirac</p>
