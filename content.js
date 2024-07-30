@@ -78,7 +78,7 @@
   }
 
   const sendDownloadRequest = async (messageId, conversationId, accessToken) => {
-    const url = `https://chatgpt.com/backend-api/synthesize?message_id=${messageId}&conversation_id=${conversationId}&voice=${voice}&format=&{fileFormat}`;
+    const url = `https://chatgpt.com/backend-api/synthesize?message_id=${messageId}&conversation_id=${conversationId}&voice=${voice}&format=${fileFormat}`;
     const headers = {
       'authorization': `Bearer ${accessToken}`,
       'oai-device-id': '',
