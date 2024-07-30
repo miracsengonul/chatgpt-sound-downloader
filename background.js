@@ -16,7 +16,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
       });
       break;
-    case "saveFileFormat":
+    case "saveFileFormatSelection":
       chrome.storage.local.set({
         fileFormat: message.value
       }, () => {
@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
       });
       break;
-    case "getFileFormat":
+    case "getFileFormatSelection":
       chrome.storage.local.get(["fileFormat"], (result) => {
         sendResponse({
           value: result.fileFormat
