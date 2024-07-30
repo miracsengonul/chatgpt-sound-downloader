@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   fileFormatList.addEventListener('change', function() {
     chrome.runtime.sendMessage({
-      action: "saveFileFormat",
+      action: "saveFileFormatSelection",
       value: this.value
     }, function(response) {
       console.log('File format saved:', response);
