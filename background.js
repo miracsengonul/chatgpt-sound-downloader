@@ -1,3 +1,7 @@
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.storage.local.set({ isFirstRun: true });
+});
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.action) {
     case "saveVoiceSelection":
