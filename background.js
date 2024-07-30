@@ -16,6 +16,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
       });
       break;
+    case "saveFileFormat":
+      chrome.storage.local.set({
+        fileFormat: message.value
+      }, () => {
+        sendResponse({
+          status: "success"
+        });
+      });
+      break;
+    case "getFileFormat":
+      chrome.storage.local.get(["fileFormat"], (result) => {
+        sendResponse({
+          value: result.fileFormat
+        });
+      });
+      break;
     default:
       sendResponse({
         status: "unknown action"
