@@ -1,19 +1,46 @@
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.storage.local.set({ isFirstRun: true });
+});
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "saveVoiceSelection") {
-    chrome.storage.local.set({
-      selectedVoice: message.value
-    }, () => {
-      sendResponse({
-        status: "success"
+  switch (message.action) {
+    case "saveVoiceSelection":
+      chrome.storage.local.set({
+        selectedVoice: message.value
+      }, () => {
+        sendResponse({
+          status: "success"
+        });
       });
-    });
-    return true;
-  } else if (message.action === "getVoiceSelection") {
-    chrome.storage.local.get(["selectedVoice"], (result) => {
-      sendResponse({
-        value: result.selectedVoice
+      break;
+    case "getVoiceSelection":
+      chrome.storage.local.get(["selectedVoice"], (result) => {
+        sendResponse({
+          value: result.selectedVoice
+        });
       });
-    });
-    return true;
+      break;
+    case "saveFileFormatSelection":
+      chrome.storage.local.set({
+        fileFormat: message.value
+      }, () => {
+        sendResponse({
+          status: "success"
+        });
+      });
+      break;
+    case "getFileFormatSelection":
+      chrome.storage.local.get(["fileFormat"], (result) => {
+        sendResponse({
+          value: result.fileFormat
+        });
+      });
+      break;
+    default:
+      sendResponse({
+        status: "unknown action"
+      });
+      break;
   }
+  return true;
 });
