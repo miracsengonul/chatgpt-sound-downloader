@@ -47,7 +47,7 @@ If you've found this project useful and would like to support its continued deve
 | |  |  |
 | :-------- | :------- | :--------------------
 | Cove | Juniper | Sky |
-| Breeze | Shimmer | Santa |
+| Breeze|
 
 
 ## 🎵 Supported Audio Format

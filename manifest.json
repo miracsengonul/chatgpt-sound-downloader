@@ -30,12 +30,13 @@
   "content_scripts": [
     {
       "matches": ["https://chatgpt.com/*"],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["lib/crypto-js.min.js"],
+      "resources": ["images/*"],
       "matches": ["https://chatgpt.com/*"]
     }
   ]

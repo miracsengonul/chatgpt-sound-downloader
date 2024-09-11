@@ -1,6 +1,6 @@
 (function() {
   function addDownloadButton() {
-    const targetElements = document.querySelectorAll('path[d="M11 4.91a.5.5 0 0 0-.838-.369L6.676 7.737A1 1 0 0 1 6 8H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2a1 1 0 0 1 .676.263l3.486 3.196A.5.5 0 0 0 11 19.09zM8.81 3.067C10.415 1.597 13 2.735 13 4.91v14.18c0 2.175-2.586 3.313-4.19 1.843L5.612 18H4a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3h1.611zm11.507 3.29a1 1 0 0 1 1.355.401A10.96 10.96 0 0 1 23 12c0 1.85-.458 3.597-1.268 5.13a1 1 0 1 1-1.768-.934A8.96 8.96 0 0 0 21 12a8.96 8.96 0 0 0-1.085-4.287 1 1 0 0 1 .402-1.356M15.799 7.9a1 1 0 0 1 1.4.2 6.48 6.48 0 0 1 1.3 3.9c0 1.313-.39 2.537-1.06 3.56a1 1 0 0 1-1.673-1.096A4.47 4.47 0 0 0 16.5 12a4.47 4.47 0 0 0-.9-2.7 1 1 0 0 1 .2-1.4"]');
+    const targetElements = document.querySelectorAll('path[d="M11 4.9099C11 4.47485 10.4828 4.24734 10.1621 4.54132L6.67572 7.7372C6.49129 7.90626 6.25019 8.00005 6 8.00005H4C3.44772 8.00005 3 8.44776 3 9.00005V15C3 15.5523 3.44772 16 4 16H6C6.25019 16 6.49129 16.0938 6.67572 16.2629L10.1621 19.4588C10.4828 19.7527 11 19.5252 11 19.0902V4.9099ZM8.81069 3.06701C10.4142 1.59714 13 2.73463 13 4.9099V19.0902C13 21.2655 10.4142 22.403 8.81069 20.9331L5.61102 18H4C2.34315 18 1 16.6569 1 15V9.00005C1 7.34319 2.34315 6.00005 4 6.00005H5.61102L8.81069 3.06701ZM20.3166 6.35665C20.8019 6.09313 21.409 6.27296 21.6725 6.75833C22.5191 8.3176 22.9996 10.1042 22.9996 12.0001C22.9996 13.8507 22.5418 15.5974 21.7323 17.1302C21.4744 17.6185 20.8695 17.8054 20.3811 17.5475C19.8927 17.2896 19.7059 16.6846 19.9638 16.1962C20.6249 14.9444 20.9996 13.5175 20.9996 12.0001C20.9996 10.4458 20.6064 8.98627 19.9149 7.71262C19.6514 7.22726 19.8312 6.62017 20.3166 6.35665ZM15.7994 7.90049C16.241 7.5688 16.8679 7.65789 17.1995 8.09947C18.0156 9.18593 18.4996 10.5379 18.4996 12.0001C18.4996 13.3127 18.1094 14.5372 17.4385 15.5604C17.1357 16.0222 16.5158 16.1511 16.0539 15.8483C15.5921 15.5455 15.4632 14.9255 15.766 14.4637C16.2298 13.7564 16.4996 12.9113 16.4996 12.0001C16.4996 10.9859 16.1653 10.0526 15.6004 9.30063C15.2687 8.85905 15.3578 8.23218 15.7994 7.90049Z"]');
     targetElements.forEach((path) => {
       const targetSpan = path.closest('span[data-state="closed"]');
       if (targetSpan && !targetSpan.nextElementSibling?.classList.contains('download-button')) {
@@ -52,13 +52,36 @@
     const match = pathname.match(/\/c\/([^\/]+)/);
     const conversationId = match ? match[1] : null;
 
-    const scriptTag = document.getElementById('__NEXT_DATA__');
+    // AccessToken'ı almak için yeni yöntem
+    let accessToken = null;
+    try {
+        const scripts = document.getElementsByTagName('script');
+        for (let script of scripts) {
+            if (script.textContent.includes('accessToken')) {
+                const match = script.textContent.match(/"accessToken":"([^"]+)"/);
+                if (match && match[1]) {
+                    accessToken = match[1];
+                    break;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error retrieving access token:', error);
+    }
 
-    const data = JSON.parse(scriptTag.textContent);
+    // Metni çek
+    const textElement = conversationTurn.querySelector('.markdown.prose');
+    const messageText = textElement ? textElement.innerText : null;
 
-    const accessToken = data.props.pageProps.session.accessToken;
-
-    sendDownloadRequest(messageId, conversationId, accessToken);
+    if (messageId && conversationId && accessToken && messageText) {
+        sendDownloadRequest(messageId, conversationId, accessToken, messageText);
+    } else {
+        console.error('Failed to retrieve necessary information for download');
+        console.log('messageId:', messageId);
+        console.log('conversationId:', conversationId);
+        console.log('accessToken:', accessToken);
+        console.log('messageText:', messageText);
+    }
   }
 
     const getVoiceSelection = () => {
@@ -109,23 +132,29 @@
   };
 
   function initializeExtension() {
-    addDownloadButton();
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+    console.log("Initializing extension...");
+    const targetNode = document.body;
+    const config = { childList: true, subtree: true };
+
+    const callback = function(mutationsList, observer) {
+      for(let mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+          console.log("DOM changed, adding download buttons...");
           addDownloadButton();
         }
-      });
-    });
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+      }
+    };
+
+    const observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
+
+    // İlk çalıştırma
+    addDownloadButton();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeExtension);
-  } else {
-    initializeExtension();
-  }
+  // Ek olarak, sayfanın tam olarak yüklenmesini bekleyelim
+  window.addEventListener('load', function() {
+    console.log("Window fully loaded, reinitializing...");
+      initializeExtension();
+  });
 })();
