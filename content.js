@@ -52,7 +52,6 @@
     const match = pathname.match(/\/c\/([^\/]+)/);
     const conversationId = match ? match[1] : null;
 
-    // AccessToken'ı almak için yeni yöntem
     let accessToken = null;
     try {
         const scripts = document.getElementsByTagName('script');
@@ -69,7 +68,6 @@
         console.error('Error retrieving access token:', error);
     }
 
-    // Metni çek
     const textElement = conversationTurn.querySelector('.markdown.prose');
     const messageText = textElement ? textElement.innerText : null;
 
@@ -148,11 +146,9 @@
     const observer = new MutationObserver(callback);
     observer.observe(targetNode, config);
 
-    // İlk çalıştırma
     addDownloadButton();
   }
 
-  // Ek olarak, sayfanın tam olarak yüklenmesini bekleyelim
   window.addEventListener('load', function() {
     console.log("Window fully loaded, reinitializing...");
       initializeExtension();
