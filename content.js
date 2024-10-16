@@ -52,35 +52,30 @@
     const match = pathname.match(/\/c\/([^\/]+)/);
     const conversationId = match ? match[1] : null;
 
-    let accessToken = null;
-    try {
-        const scripts = document.getElementsByTagName('script');
-        for (let script of scripts) {
-            if (script.textContent.includes('accessToken')) {
-                const match = script.textContent.match(/"accessToken":"([^"]+)"/);
-                if (match && match[1]) {
-                    accessToken = match[1];
-                    break;
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Error retrieving access token:', error);
-    }
-
     const textElement = conversationTurn.querySelector('.markdown.prose');
     const messageText = textElement ? textElement.innerText : null;
 
-    if (messageId && conversationId && accessToken && messageText) {
-        sendDownloadRequest(messageId, conversationId, accessToken, messageText);
+    if (messageId && conversationId && messageText) {
+        sendDownloadRequest(messageId, conversationId, messageText);
     } else {
         console.error('Failed to retrieve necessary information for download');
         console.log('messageId:', messageId);
         console.log('conversationId:', conversationId);
-        console.log('accessToken:', accessToken);
         console.log('messageText:', messageText);
     }
   }
+
+    const getAccessToken = () => {
+      return new Promise((resolve) => {
+        chrome.runtime.sendMessage({ action: "getChatGPTToken" }, (response) => {
+          if (!response.value) {
+            alert(`Please enter your ChatGPT token in the extension options`);
+            return;
+          }          
+          resolve(response.value);
+        });
+      });
+    };
 
     const getVoiceSelection = () => {
     return new Promise((resolve) => {
@@ -98,9 +93,10 @@
     });
   };
 
-  const sendDownloadRequest = async (messageId, conversationId, accessToken) => {
+  const sendDownloadRequest = async (messageId, conversationId) => {
     const voice = await getVoiceSelection();
     const fileFormat = await getFileFormatSelection();
+    const accessToken = await getAccessToken();
     const url = `https://chatgpt.com/backend-api/synthesize?message_id=${messageId}&conversation_id=${conversationId}&voice=${voice}&format=${fileFormat}`;
     const headers = {
       'authorization': `Bearer ${accessToken}`,

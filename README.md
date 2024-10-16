@@ -9,9 +9,21 @@ If you've found this project useful and would like to support its continued deve
 
 [![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/mi)
 
-## Screenshots
+## Steps
 
-![App Screenshot](screenshot.jpg)
+1. Open ChatGPT in Chrome
+2. Right-click anywhere on the page and select "Inspect"
+3. Click on "Console" tab
+4. Copy and paste this command:
+```window.__remixContext.state.loaderData.root.clientBootstrap.session.accessToken```
+
+5. Copy the token value that appears
+6. Open ChatGPT Sound Downloader extension settings
+7. Paste the token into the "Your token" field
+
+![App Screenshot](extension.png)
+
+ ![App Screenshot](screenshot.jpg)
 
 
 ## Author

@@ -6,6 +6,20 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.action) {
+    case "saveChatGPTToken":
+      chrome.storage.local.set({
+        chatGPTToken: message.value
+      }, () => {
+        console.log('ChatGPT token saved:', message.value);
+        sendResponse({ status: "success" });
+      });
+      break;
+    case "getChatGPTToken":
+      chrome.storage.local.get(["chatGPTToken"], (result) => {
+        console.log('Retrieved ChatGPT token:', result.chatGPTToken);
+        sendResponse({ value: result.chatGPTToken || '' });
+      });
+      break;  
     case "saveVoiceSelection":
       chrome.storage.local.set({
         selectedVoice: message.value

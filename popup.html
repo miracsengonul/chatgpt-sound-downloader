@@ -12,19 +12,28 @@
     <img src="icon.png" width="56" class="logo">
     <h1>ChatGPT Sound Downloader</h1>
   </div>
-  <label class="poppins-semibold">Select Your Voice</label>
-  <span>After the selection, you should refresh the page and download it.</span>
-  <select id="voice-list">
-    <option value="cove">Cove</option>
-    <option value="juniper">Juniper</option>
-    <option value="sky">Sky</option>
-    <option value="breeze">Breeze</option>
-  </select>
-  <label class="poppins-semibold">Select File Format</label>
-  <select id="file-format-list">
-    <option value="aac">aac</option>
-    <option value="mp3">mp3</option>
-  </select>
+  <div class="form-content">
+    <div>
+      <label class="poppins-semibold">Your Token</label>
+      <input id="token-input" type="text" placeholder="Enter your token">
+    </div>
+    <div>
+      <label class="poppins-semibold">Select Your Voice</label>
+      <select id="voice-list">
+        <option value="cove">Cove</option>
+        <option value="juniper">Juniper</option>
+        <option value="sky">Sky</option>
+        <option value="breeze">Breeze</option>
+      </select>
+    </div>
+    <div>
+      <label class="poppins-semibold">Select File Format</label>
+      <select id="file-format-list">
+        <option value="aac">aac</option>
+        <option value="mp3">mp3</option>
+      </select>
+    </div>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>

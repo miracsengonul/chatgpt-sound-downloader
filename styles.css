@@ -20,6 +20,13 @@ body {
   margin: 0 0 10px 0;
 }
 
+.form-content {
+  display: flex; 
+  flex-direction: column; 
+  row-gap:20px; 
+  margin-bottom: 15px;
+}
+
 h1 {
   color: #fff;
   font-size: 18px;
@@ -45,6 +52,17 @@ select {
   padding: 0.625rem; /* p-2.5 */
   transition: border-color 0.2s, box-shadow 0.2s; /* for focus effects */
   width: 100%;
+}
+
+input {
+  background-color: #f9fafb; /* bg-gray-50 */
+  border: 2px solid #d1d5db; /* border-gray-300 */
+  color: #111827; /* text-gray-900 */
+  font-size: 0.875rem; /* text-sm */
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 0.625rem; /* p-2.5 */
+  transition: border-color 0.2s, box-shadow 0.2s; /* for focus effects */
+  width: 94%;
 }
 
 select:focus {
