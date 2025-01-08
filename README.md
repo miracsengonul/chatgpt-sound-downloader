@@ -17,7 +17,7 @@ If you've found this project useful and would like to support its continued deve
 4. Copy and paste this command:
 ```window.__remixContext.state.loaderData.root.clientBootstrap.session.accessToken```
 
-5. Copy the token value that appears
+5. Copy the token value that appears(without enclosing it in single or double quotation)
 6. Open ChatGPT Sound Downloader extension settings
 7. Paste the token into the "Your token" field
 
