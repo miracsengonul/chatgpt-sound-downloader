@@ -15,7 +15,26 @@ If you've found this project useful and would like to support its continued deve
 2. Right-click anywhere on the page and select "Inspect"
 3. Click on "Console" tab
 4. Copy and paste this command:
-```window.__remixContext.state.loaderData.root.clientBootstrap.session.accessToken```
+```
+function getToken() {
+    const scripts = document.scripts;
+    
+    for (const script of scripts) {
+        const content = script.textContent;
+        if (content?.includes('accessToken')) {
+            const token = content.match(/eyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*/)?.[0];
+            if (token) {
+                return token;
+            }
+        }
+    }
+    
+    console.log('Token not found');
+    return null;
+}
+
+getToken();
+```
 
 5. Copy the token value that appears(without enclosing it in single or double quotation)
 6. Open ChatGPT Sound Downloader extension settings
