@@ -119,7 +119,7 @@
       'user-agent': navigator.userAgent,
     };
 
-    alert('Lütfen bekleyin...');
+    alert('Please wait...');
     try {
       const response = await fetch(url, { headers, credentials: 'include' });
       if (!response.ok) {
