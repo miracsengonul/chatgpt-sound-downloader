@@ -77,8 +77,8 @@ getToken();
 
 | |  |  |
 | :-------- | :------- | :--------------------
-| Cove | Juniper | Sky |
-| Breeze|
+| Breeze | Juniper | Arbor |
+| Sol | Maple | Vale |
 
 
 ## 🎵 Supported Audio Format

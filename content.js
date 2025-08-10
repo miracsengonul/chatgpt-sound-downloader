@@ -1,116 +1,131 @@
-(function() {
-  function addDownloadButton() {
-    const targetElements = document.querySelectorAll('path[d="M11 4.9099C11 4.47485 10.4828 4.24734 10.1621 4.54132L6.67572 7.7372C6.49129 7.90626 6.25019 8.00005 6 8.00005H4C3.44772 8.00005 3 8.44776 3 9.00005V15C3 15.5523 3.44772 16 4 16H6C6.25019 16 6.49129 16.0938 6.67572 16.2629L10.1621 19.4588C10.4828 19.7527 11 19.5252 11 19.0902V4.9099ZM8.81069 3.06701C10.4142 1.59714 13 2.73463 13 4.9099V19.0902C13 21.2655 10.4142 22.403 8.81069 20.9331L5.61102 18H4C2.34315 18 1 16.6569 1 15V9.00005C1 7.34319 2.34315 6.00005 4 6.00005H5.61102L8.81069 3.06701ZM20.3166 6.35665C20.8019 6.09313 21.409 6.27296 21.6725 6.75833C22.5191 8.3176 22.9996 10.1042 22.9996 12.0001C22.9996 13.8507 22.5418 15.5974 21.7323 17.1302C21.4744 17.6185 20.8695 17.8054 20.3811 17.5475C19.8927 17.2896 19.7059 16.6846 19.9638 16.1962C20.6249 14.9444 20.9996 13.5175 20.9996 12.0001C20.9996 10.4458 20.6064 8.98627 19.9149 7.71262C19.6514 7.22726 19.8312 6.62017 20.3166 6.35665ZM15.7994 7.90049C16.241 7.5688 16.8679 7.65789 17.1995 8.09947C18.0156 9.18593 18.4996 10.5379 18.4996 12.0001C18.4996 13.3127 18.1094 14.5372 17.4385 15.5604C17.1357 16.0222 16.5158 16.1511 16.0539 15.8483C15.5921 15.5455 15.4632 14.9255 15.766 14.4637C16.2298 13.7564 16.4996 12.9113 16.4996 12.0001C16.4996 10.9859 16.1653 10.0526 15.6004 9.30063C15.2687 8.85905 15.3578 8.23218 15.7994 7.90049Z"]');
-    targetElements.forEach((path) => {
-      const targetSpan = path.closest('span[data-state="closed"]');
-      if (targetSpan && !targetSpan.nextElementSibling?.classList.contains('download-button')) {
-        const downloadButton = document.createElement('button');
-        downloadButton.className = 'download-button rounded-lg text-token-text-secondary hover:bg-token-main-surface-secondary ml-1 mr-1';
+(function () {
+  const SELECTOR_VOICE_BTN = 'button[data-testid="voice-play-turn-action-button"]';
+  const SELECTOR_TOOLBAR = 'div.flex.min-h-\\[46px\\].justify-start';
+  const DOWNLOAD_CLASS = 'download-button';
 
-        const svgNamespace = "http://www.w3.org/2000/svg";
-        const svg = document.createElementNS(svgNamespace, "svg");
-        svg.setAttribute("width", "20");
-        svg.setAttribute("height", "20");
-        svg.setAttribute("viewBox", "0 0 24 24");
-        svg.setAttribute("fill", "none");
-        svg.setAttribute("stroke", "#7D7D7D");
-        svg.setAttribute("stroke-width", "2");
-        svg.setAttribute("stroke-linecap", "round");
-        svg.setAttribute("stroke-linejoin", "round");
-        svg.classList.add("icon-md-heavy", "lucide-cloud-download");
+  function getCookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
 
-        const path1 = document.createElementNS(svgNamespace, "path");
-        path1.setAttribute("d", "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242");
-        svg.appendChild(path1);
+  function buildDownloadIcon() {
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('width', '20');
+    svg.setAttribute('height', '20');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', '#7D7D7D');
+    svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.classList.add('icon');
+    const p1 = document.createElementNS(ns, 'path');
+    p1.setAttribute('d', 'M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242');
+    const p2 = document.createElementNS(ns, 'path');
+    p2.setAttribute('d', 'M12 12v9');
+    const p3 = document.createElementNS(ns, 'path');
+    p3.setAttribute('d', 'm8 17 4 4 4-4');
+    svg.appendChild(p1);
+    svg.appendChild(p2);
+    svg.appendChild(p3);
+    return svg;
+  }
 
-        const path2 = document.createElementNS(svgNamespace, "path");
-        path2.setAttribute("d", "M12 12v9");
-        svg.appendChild(path2);
+  function buildDownloadButton() {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = `${DOWNLOAD_CLASS} text-token-text-secondary hover:bg-token-bg-secondary rounded-lg`;
+    b.setAttribute('aria-label', 'Download');
+    b.setAttribute('data-testid', 'download-turn-audio-button');
+    const inner = document.createElement('span');
+    inner.className = 'touch:w-10 flex h-8 w-8 items-center justify-center';
+    inner.appendChild(buildDownloadIcon());
+    b.appendChild(inner);
+    b.addEventListener('click', getMessageIdFromClickedButton);
+    return b;
+  }
 
-        const path3 = document.createElementNS(svgNamespace, "path");
-        path3.setAttribute("d", "m8 17 4 4 4-4");
-        svg.appendChild(path3);
-
-        downloadButton.appendChild(svg);
-
-        downloadButton.addEventListener('click', (event) => getMessageIdFromClickedButton(event));
-
-        targetSpan.parentNode.insertBefore(downloadButton, targetSpan.nextSibling);
-      }
+  function addDownloadButtons() {
+    const toolbars = document.querySelectorAll(SELECTOR_TOOLBAR);
+    toolbars.forEach((tb) => {
+      const voiceBtn = tb.querySelector(SELECTOR_VOICE_BTN);
+      if (!voiceBtn) return;
+      if (tb.querySelector(`.${DOWNLOAD_CLASS}`)) return;
+      const btn = buildDownloadButton();
+      voiceBtn.parentNode.insertBefore(btn, voiceBtn.nextSibling);
     });
   }
 
   function getMessageIdFromClickedButton(event) {
     const button = event.currentTarget;
-    const conversationTurn = button.closest('.group\\/conversation-turn');
-    if (!conversationTurn) return null;
-
-    const elementWithMessageId = conversationTurn.querySelector('[data-message-id]');
-    const messageId = elementWithMessageId ? elementWithMessageId.getAttribute('data-message-id') : null;
-
+    const turn = button.closest('.group\\/turn-messages') || button.closest('[data-message-id]')?.parentElement;
+    if (!turn) return;
+    const elWithId = turn.querySelector('[data-message-id]');
+    const messageId = elWithId ? elWithId.getAttribute('data-message-id') : null;
     const pathname = window.location.pathname;
-    const match = pathname.match(/\/c\/([^\/]+)/);
+    const match = pathname.match(/\/c\/([^/]+)/);
     const conversationId = match ? match[1] : null;
-
-    const textElement = conversationTurn.querySelector('.markdown.prose');
-    const messageText = textElement ? textElement.innerText : null;
-
-    if (messageId && conversationId && messageText) {
-        sendDownloadRequest(messageId, conversationId, messageText);
+    if (messageId && conversationId) {
+      sendDownloadRequest(messageId, conversationId);
     } else {
-        console.error('Failed to retrieve necessary information for download');
-        console.log('messageId:', messageId);
-        console.log('conversationId:', conversationId);
-        console.log('messageText:', messageText);
+      console.error('Gerekli bilgiler alınamadı', { messageId, conversationId });
     }
   }
 
-    const getAccessToken = () => {
-      return new Promise((resolve) => {
-        chrome.runtime.sendMessage({ action: "getChatGPTToken" }, (response) => {
-          if (!response.value) {
-            alert(`Please enter your ChatGPT token in the extension options`);
-            return;
-          }          
-          resolve(response.value);
-        });
-      });
-    };
-
-    const getVoiceSelection = () => {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage({ action: "getVoiceSelection" }, (response) => {
+  const getAccessToken = () =>
+    new Promise((resolve) => {
+      chrome.runtime.sendMessage({ action: 'getChatGPTToken' }, (response) => {
+        if (!response?.value) {
+          alert('Please enter the ChatGPT token in the extension settings');
+          return;
+        }
         resolve(response.value);
       });
     });
-  };
 
-  const getFileFormatSelection = () => {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage({ action: "getFileFormatSelection" }, (response) => {
-        resolve(response.value);
-      });
+  const getVoiceSelection = () =>
+    new Promise((resolve) => {
+      chrome.runtime.sendMessage({ action: 'getVoiceSelection' }, (response) => resolve(response?.value || 'breeze'));
     });
-  };
 
-  const sendDownloadRequest = async (messageId, conversationId) => {
+  const getFileFormatSelection = () =>
+    new Promise((resolve) => {
+      chrome.runtime.sendMessage({ action: 'getFileFormatSelection' }, (response) => resolve(response?.value || 'aac'));
+    });
+
+  async function sendDownloadRequest(messageId, conversationId) {
     const voice = await getVoiceSelection();
     const fileFormat = await getFileFormatSelection();
     const accessToken = await getAccessToken();
-    const url = `https://chatgpt.com/backend-api/synthesize?message_id=${messageId}&conversation_id=${conversationId}&voice=${voice}&format=${fileFormat}`;
+    const deviceId = getCookie('oai-did') || '';
+    const accountId = getCookie('_account') || undefined;
+
+    const url = `https://chatgpt.com/backend-api/synthesize?message_id=${encodeURIComponent(
+      messageId
+    )}&conversation_id=${encodeURIComponent(conversationId)}&voice=${encodeURIComponent(
+      voice
+    )}&format=${encodeURIComponent(fileFormat)}`;
+
     const headers = {
-      'authorization': `Bearer ${accessToken}`,
-      'oai-device-id': '',
-      'referer': `https://chatgpt.com/c/${conversationId}`,
-      'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+      accept: '*/*',
+      'accept-language': (navigator.languages && navigator.languages.join(',')) || navigator.language || 'en-US',
+      authorization: `Bearer ${accessToken}`,
+      'cache-control': 'no-cache',
+      ...(accountId ? { 'chatgpt-account-id': accountId } : {}),
+      'oai-device-id': deviceId,
+      'oai-language': navigator.language || 'en-US',
+      referer: `${location.origin}/c/${conversationId}`,
+      'user-agent': navigator.userAgent,
     };
 
-    alert(`Please wait...`);
-
+    alert('Lütfen bekleyin...');
     try {
-      const response = await fetch(url, {
-        headers
-      });
+      const response = await fetch(url, { headers, credentials: 'include' });
+      if (!response.ok) {
+        const text = await response.text().catch(() => '');
+        throw new Error(`HTTP ${response.status} ${response.statusText} - ${text.slice(0, 200)}`);
+      }
       const blob = await response.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -120,33 +135,18 @@
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(downloadUrl);
+      a.remove();
     } catch (error) {
       console.error('Download failed:', error);
+      alert('Download failed. Check console for details.');
     }
-  };
-
-  function initializeExtension() {
-    console.log("Initializing extension...");
-    const targetNode = document.body;
-    const config = { childList: true, subtree: true };
-
-    const callback = function(mutationsList, observer) {
-      for(let mutation of mutationsList) {
-        if (mutation.type === 'childList') {
-          console.log("DOM changed, adding download buttons...");
-          addDownloadButton();
-        }
-      }
-    };
-
-    const observer = new MutationObserver(callback);
-    observer.observe(targetNode, config);
-
-    addDownloadButton();
   }
 
-  window.addEventListener('load', function() {
-    console.log("Window fully loaded, reinitializing...");
-      initializeExtension();
-  });
+  function initializeExtension() {
+    const observer = new MutationObserver(addDownloadButtons);
+    observer.observe(document.body, { childList: true, subtree: true });
+    addDownloadButtons();
+  }
+
+  window.addEventListener('load', initializeExtension);
 })();
