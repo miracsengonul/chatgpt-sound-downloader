@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case "getVoiceSelection":
       chrome.storage.local.get(["selectedVoice"], (result) => {
         console.log('Retrieved voice selection:', result.selectedVoice);
-        sendResponse({ value: result.selectedVoice || 'breeze' }); // Default to 'alloy' if not set
+        sendResponse({ value: result.selectedVoice || 'breeze' });
       });
       break;
     case "saveFileFormatSelection":
